@@ -1,6 +1,7 @@
 import { Filter } from "pages";
 import React, { FC, useRef } from "react";
 import { Location, Program, Range } from "types";
+import { Group, CheckboxGroup, Checkbox, RadioGroup, Radio } from "@mantine/core";
 
 interface FormProps {
   filter: Filter;
@@ -8,6 +9,7 @@ interface FormProps {
 }
 export const Form: FC<FormProps> = ({ filter, setFilter }) => {
   const formRef = useRef<HTMLFormElement>(null);
+
   const onChange = React.useCallback(() => {
     if (!formRef.current) {
       return;
@@ -22,50 +24,25 @@ export const Form: FC<FormProps> = ({ filter, setFilter }) => {
 
   return (
     <form ref={formRef}>
-      <div>
-        {Object.values(Location).map((location) => {
-          return (
-            <input
-              key={location}
-              type="checkbox"
-              name="location"
-              value={location}
-              checked={filter.location?.includes(location)}
-              onChange={onChange}
-            />
-          );
-        })}
-      </div>
+      <Group spacing="xl">
+        <CheckboxGroup label={<h3>Helyszín</h3>} value={filter.location} onChange={onChange}>
+          {Object.values(Location).map((location) => {
+            return <Checkbox label={location} key={location} name="location" value={location} />;
+          })}
+        </CheckboxGroup>
 
-      <div>
-        {Object.values(Program).map((program) => {
-          return (
-            <input
-              key={program}
-              type="checkbox"
-              name="program"
-              value={program}
-              checked={filter.program?.includes(program)}
-              onChange={onChange}
-            />
-          );
-        })}
-      </div>
+        <CheckboxGroup label={<h3>Műfaj</h3>} value={filter.program} onChange={onChange}>
+          {Object.values(Program).map((program) => {
+            return <Checkbox label={program} key={program} name="program" value={program} />;
+          })}
+        </CheckboxGroup>
 
-      <div>
-        {Object.values(Range).map((range) => {
-          return (
-            <input
-              key={range}
-              type="radio"
-              name="range"
-              value={range}
-              checked={range === filter.range}
-              onChange={onChange}
-            />
-          );
-        })}
-      </div>
+        <RadioGroup label={<h3>Idősáv</h3>} name="range" value={filter.range} onChange={onChange}>
+          {Object.values(Range).map((range) => {
+            return <Radio label={range} key={range} value={range} />;
+          })}
+        </RadioGroup>
+      </Group>
     </form>
   );
 };

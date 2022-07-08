@@ -3,6 +3,8 @@ import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import { useLocalStorage } from "utils/useLocalStorage";
 import { Location, Program, Range, Item } from "types";
+import { Drawer } from "@mantine/core";
+import { Paper, Group, Button, Space } from "@mantine/core";
 
 export interface Filter {
   range: Range;
@@ -17,11 +19,12 @@ const Home: NextPage = () => {
     location: Object.values(Location),
   });
   const [list, setList] = useState<Item[]>([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     // @ts-ignore
     const query = new URLSearchParams(filter);
-    // console.log(filter, query.toString());
+    console.log(filter, query.toString());
     fetch("/api/filter?" + query)
       .then((r) => r.json())
       .then((r) => setList(r));
@@ -34,16 +37,36 @@ const Home: NextPage = () => {
         <li key={item.id}>{item.title}</li>
       ))}
 
-      <div
-        style={{
-          width: "100%",
-          background: "white",
-          position: "fixed",
-          bottom: 0,
-        }}
+      <Drawer
+        title={<h2>Filter</h2>}
+        position="bottom"
+        opened={open}
+        onClose={() => setOpen(false)}
+        padding="lg"
+        size="auto"
+        overlayColor="#aaa"
       >
         <Form filter={filter} setFilter={setFilter} />
-      </div>
+        <Space h="lg" />
+      </Drawer>
+
+      <Paper
+        style={{
+          width: "100%",
+          position: "fixed",
+          bottom: 0,
+          background: "white",
+        }}
+        shadow="xl"
+        p="md"
+        withBorder
+      >
+        <Group position="apart">
+          <Button variant="outline">?</Button>
+          <Button variant="outline">Rejtett</Button>
+          <Button onClick={() => setOpen(true)}>Filter</Button>
+        </Group>
+      </Paper>
     </div>
   );
 };
