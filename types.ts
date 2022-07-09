@@ -1,4 +1,7 @@
+export type ID = string;
+
 export interface Item {
+  productionId: string;
   title: string;
   description: string;
   duration: number;
@@ -7,7 +10,8 @@ export interface Item {
   stage: undefined | { name: Stage };
   labels: undefined | { name: Topic }[];
   // extra
-  id: number;
+  id: ID;
+  dateInMinutes: number;
   relativeDateInMinutes: number;
 }
 

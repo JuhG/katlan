@@ -1,20 +1,57 @@
 import { Button, Group, Popover } from "@mantine/core";
+import { Favorites, FavoriteState } from "pages";
 import { FC, useState } from "react";
 import { useLongPress } from "react-use";
 import { Item } from "types";
+
+const getBackground = (itemState: FavoriteState) => {
+  switch (itemState) {
+    case "must": {
+      return "green";
+    }
+    case "maybe": {
+      return "yellow";
+    }
+    default: {
+      return "white";
+    }
+  }
+};
 
 interface BoxProps {
   cutoff: number;
   item: Item;
   setShowOverlay: (open: boolean) => void;
+  favorites: Favorites;
+  setFavorites: React.Dispatch<React.SetStateAction<Favorites | undefined>>;
 }
-export const Box: FC<BoxProps> = ({ item, cutoff, setShowOverlay }) => {
-  console.log(item);
+export const Box: FC<BoxProps> = ({ item, cutoff, setShowOverlay, favorites, setFavorites }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const longPressEvent = useLongPress(() => {
-    setPopoverOpen(true);
-    setShowOverlay(true);
-  });
+  const setOverlayState = (state: boolean) => {
+    setPopoverOpen(state);
+    setShowOverlay(state);
+  };
+  const longPressEvent = useLongPress(() => setOverlayState(true));
+
+  const itemState = favorites[item.id];
+  if (itemState === "nope") {
+    return null;
+  }
+
+  const setFavoriteState = (state?: FavoriteState) => {
+    setFavorites((favs) => {
+      if (!favs) {
+        favs = {};
+      }
+      if (state) {
+        favs[item.id] = state;
+      } else {
+        delete favs[item.id];
+      }
+      return favs;
+    });
+    setOverlayState(false);
+  };
 
   return (
     <li
@@ -29,10 +66,7 @@ export const Box: FC<BoxProps> = ({ item, cutoff, setShowOverlay }) => {
     >
       <Popover
         opened={popoverOpen}
-        onClose={() => {
-          setPopoverOpen(false);
-          setShowOverlay(false);
-        }}
+        onClose={() => setOverlayState(false)}
         position="bottom"
         target={
           <div
@@ -41,7 +75,7 @@ export const Box: FC<BoxProps> = ({ item, cutoff, setShowOverlay }) => {
               display: "flex",
               flexDirection: "column",
               justifyContent: "space-between",
-              background: "white",
+              background: getBackground(itemState),
               border: "1px solid gray",
               height: popoverOpen ? "auto" : item.duration * 2,
               minHeight: popoverOpen ? item.duration * 2 : "",
@@ -65,7 +99,7 @@ export const Box: FC<BoxProps> = ({ item, cutoff, setShowOverlay }) => {
             <div
               style={{
                 padding: 8,
-                background: "white",
+                background: getBackground(itemState),
                 display: "flex",
                 justifyContent: "space-between",
               }}
@@ -77,9 +111,20 @@ export const Box: FC<BoxProps> = ({ item, cutoff, setShowOverlay }) => {
         }
       >
         <Group direction="column">
-          <Button color="green">Kötelező</Button>
-          <Button color="yellow">Jó lenne</Button>
-          <Button color="red">Rejtsd el</Button>
+          {itemState && <Button onClick={() => setFavoriteState()}>Alapállapot</Button>}
+          {itemState !== "must" && (
+            <Button color="green" onClick={() => setFavoriteState("must")}>
+              Kötelező
+            </Button>
+          )}
+          {itemState !== "maybe" && (
+            <Button color="yellow" onClick={() => setFavoriteState("maybe")}>
+              Jó lenne
+            </Button>
+          )}
+          <Button color="red" onClick={() => setFavoriteState("nope")}>
+            Rejtsd el
+          </Button>
         </Group>
       </Popover>
     </li>

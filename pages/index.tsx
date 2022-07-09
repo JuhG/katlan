@@ -2,9 +2,9 @@ import { Form } from "components/Form";
 import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import { useLocalStorage } from "react-use";
-import { Village, Topic, Day, Item, Stage } from "types";
+import { Village, Topic, Day, Item, Stage, ID } from "types";
 import { Drawer, Overlay } from "@mantine/core";
-import { Paper, Group, Button, Space, Popover } from "@mantine/core";
+import { Paper, Group, Button, Space, Divider, Modal } from "@mantine/core";
 import { Box } from "components/Box";
 
 export interface Filter {
@@ -18,6 +18,9 @@ interface Group {
   stage: Stage;
   list: Item[];
 }
+
+export type FavoriteState = "must" | "maybe" | "nope" | undefined;
+export type Favorites = Record<ID, FavoriteState>;
 
 const groupByVillageAndStage = (list: Item[]): Group[] => {
   const groups = list.reduce<Record<Stage, Group>>((groups, item) => {
@@ -46,6 +49,8 @@ const Home: NextPage = () => {
   const [list, setList] = useState<Item[]>([]);
   const [open, setOpen] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
+  const [favorites, setFavorites] = useLocalStorage<Favorites>("DD_KATLAN_FAVORITES", {});
+  const [openHidden, setOpenHidden] = useState(false);
 
   useEffect(() => {
     // @ts-ignore
@@ -56,21 +61,33 @@ const Home: NextPage = () => {
       .then((r) => setList(r));
   }, [filter]);
 
+  const hidden = !favorites
+    ? []
+    : list.filter((item) => {
+        return favorites[item.id] === "nope";
+      });
+
+  const visible = !favorites
+    ? list
+    : list.filter((item) => {
+        return favorites[item.id] !== "nope";
+      });
+
   // find the first program of the day
   // show an extra 30 minutes of padding before
   const cutoff =
-    list.reduce((smallest, current) => {
+    visible.reduce((smallest, current) => {
       return Math.min(smallest, current.relativeDateInMinutes);
     }, Infinity) - 30;
 
   const endOfDay =
-    list.reduce((biggest, current) => {
+    visible.reduce((biggest, current) => {
       return Math.max(biggest, current.relativeDateInMinutes + current.duration);
     }, 0) -
     cutoff +
     60;
 
-  const groups = groupByVillageAndStage(list);
+  const groups = groupByVillageAndStage(visible);
 
   return (
     <div>
@@ -112,7 +129,16 @@ const Home: NextPage = () => {
                 }}
               >
                 {group.list.map((item) => {
-                  return <Box key={item.id} item={item} cutoff={cutoff} setShowOverlay={setShowOverlay} />;
+                  return (
+                    <Box
+                      key={item.id}
+                      item={item}
+                      cutoff={cutoff}
+                      setShowOverlay={setShowOverlay}
+                      favorites={favorites as Favorites}
+                      setFavorites={setFavorites}
+                    />
+                  );
                 })}
               </ul>
             </li>
@@ -136,6 +162,54 @@ const Home: NextPage = () => {
         <Space h="lg" />
       </Drawer>
 
+      <Modal
+        title={<h2>Rejtett programok</h2>}
+        opened={openHidden}
+        onClose={() => setOpenHidden(false)}
+        padding="lg"
+        size="auto"
+        overlayColor="#aaa"
+      >
+        {!hidden.length ? (
+          <p>Még nincs egy program sem elrejtve!</p>
+        ) : (
+          <ul>
+            {hidden.map((item) => {
+              return (
+                <>
+                  <li key={item.id} style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+                    <div>
+                      <p>{item.title}</p>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <p>{item.village?.name}</p>
+                        <span>/</span>
+                        <p>{item.stage?.name}</p>
+                      </div>
+                      <p>{item.time?.name}</p>
+                    </div>
+                    <Button
+                      onClick={() => {
+                        setFavorites((favs) => {
+                          if (!favs) {
+                            favs = {};
+                          }
+                          delete favs[item.id];
+                          return favs;
+                        });
+                      }}
+                    >
+                      Vissza
+                    </Button>
+                  </li>
+                  <Divider my="sm" />
+                </>
+              );
+            })}
+            <Space h="lg" />
+          </ul>
+        )}
+      </Modal>
+
       <Paper
         style={{
           width: "100%",
@@ -150,7 +224,9 @@ const Home: NextPage = () => {
       >
         <Group position="apart">
           <Button variant="outline">?</Button>
-          <Button variant="outline">Rejtett</Button>
+          <Button variant="outline" onClick={() => setOpenHidden((value) => !value)}>
+            Rejtett
+          </Button>
           <Button onClick={() => setOpen((value) => !value)}>Filter</Button>
         </Group>
       </Paper>
