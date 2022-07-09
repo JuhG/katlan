@@ -1,10 +1,11 @@
 import { Form } from "components/Form";
 import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
-import { useLocalStorage } from "utils/useLocalStorage";
+import { useLocalStorage } from "react-use";
 import { Village, Topic, Day, Item, Stage } from "types";
-import { Drawer } from "@mantine/core";
+import { Drawer, Overlay } from "@mantine/core";
 import { Paper, Group, Button, Space, Popover } from "@mantine/core";
+import { Box } from "components/Box";
 
 export interface Filter {
   day: Day;
@@ -32,7 +33,7 @@ const groupByVillageAndStage = (list: Item[]): Group[] => {
     }
     groups[item.stage.name].list.push(item);
     return groups;
-  }, {});
+  }, {} as any);
   return Object.values(groups);
 };
 
@@ -44,6 +45,7 @@ const Home: NextPage = () => {
   });
   const [list, setList] = useState<Item[]>([]);
   const [open, setOpen] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
 
   useEffect(() => {
     // @ts-ignore
@@ -72,6 +74,7 @@ const Home: NextPage = () => {
 
   return (
     <div>
+      {showOverlay && <Overlay zIndex="1" opacity="0.6" color="#000" />}
       <ul
         style={{
           display: "flex",
@@ -109,38 +112,7 @@ const Home: NextPage = () => {
                 }}
               >
                 {group.list.map((item) => {
-                  console.log(item);
-                  return (
-                    <li
-                      key={item.id}
-                      style={{
-                        listStyle: "none",
-                        position: "absolute",
-                        left: 0,
-                        top: (item.relativeDateInMinutes - cutoff) * 2,
-                        width: "100%",
-                        padding: 4,
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                          background: "white",
-                          border: "1px solid gray",
-                          minHeight: item.duration * 2,
-                          padding: 8,
-                        }}
-                      >
-                        <p style={{ flex: 1 }}>{item.title}</p>
-                        <div style={{ display: "flex", justifyContent: "space-between" }}>
-                          <p>{item.time?.name}</p>
-                          <p>{item.duration} perc</p>
-                        </div>
-                      </div>
-                    </li>
-                  );
+                  return <Box key={item.id} item={item} cutoff={cutoff} setShowOverlay={setShowOverlay} />;
                 })}
               </ul>
             </li>
@@ -157,7 +129,10 @@ const Home: NextPage = () => {
         size="auto"
         overlayColor="#aaa"
       >
-        <Form filter={filter} setFilter={setFilter} />
+        <Form filter={filter as Filter} setFilter={setFilter} />
+        <Space h="lg" />
+        <Space h="lg" />
+        <Space h="lg" />
         <Space h="lg" />
       </Drawer>
 
@@ -167,6 +142,7 @@ const Home: NextPage = () => {
           position: "fixed",
           bottom: 0,
           background: "white",
+          zIndex: 301,
         }}
         shadow="xl"
         p="md"
@@ -175,7 +151,7 @@ const Home: NextPage = () => {
         <Group position="apart">
           <Button variant="outline">?</Button>
           <Button variant="outline">Rejtett</Button>
-          <Button onClick={() => setOpen(true)}>Filter</Button>
+          <Button onClick={() => setOpen((value) => !value)}>Filter</Button>
         </Group>
       </Paper>
     </div>

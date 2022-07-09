@@ -1,5 +1,6 @@
 export interface Item {
   title: string;
+  description: string;
   duration: number;
   time: undefined | { name: string };
   village: undefined | { name: Village };

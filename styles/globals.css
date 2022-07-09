@@ -1,3 +1,9 @@
+pre {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /*
 Source:
 https://tailwindcss.com/docs/preflight
