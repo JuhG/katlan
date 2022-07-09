@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Range, Location, Program, Item } from "types";
+import { Day, Village, Topic, Item, Stage } from "types";
 import dayjs from "dayjs";
 
 const getUrl = (host?: string) => {
@@ -31,67 +31,94 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return item;
   });
 
-  list = filterByLocation(list, normalizeQueryValue(req.query.location));
-  list = filterByProgram(list, normalizeQueryValue(req.query.program));
-  list = filterByRange(list, req.query.range as Range);
+  list = filterByVillage(list, normalizeQueryValue(req.query.village));
+  list = filterByTopic(list, normalizeQueryValue(req.query.topic));
+  list = filterByDay(list, req.query.day as Day);
+  // TODO: remove unnecessary data
   res.json(list);
 }
 
-const filterByLocation = (list: Item[], locations: Location[] | undefined) => {
-  if (!locations) {
+const filterByVillage = (list: Item[], villages: Village[] | undefined) => {
+  if (!villages) {
     return list;
   }
   return list.filter((item) => {
     if (!item.village) {
-      return true;
+      return false;
     }
-    return locations.some((location) => location === item.village?.name);
+    return villages.some((village) => village === item.village?.name);
   });
 };
 
-const filterByProgram = (list: Item[], programs: Program[] | undefined) => {
-  if (!programs) {
+const filterByTopic = (list: Item[], topics: Topic[] | undefined) => {
+  if (!topics) {
     return list;
   }
   return list.filter((item) => {
     if (!item.labels) {
       return true;
     }
-    return programs.some((program) => {
+    return topics.some((topic) => {
       const labelNames = item.labels?.map((label) => label.name);
-      return labelNames?.includes(program);
+      return labelNames?.includes(topic);
     });
   });
 };
 
-const parseDate = (item: Item) => {
-  return new Date("2022 " + item.time?.name).getTime() / 1000;
+export const parseDate = (item: Item) => {
+  return new Date("2022 " + item.time?.name).getTime() / 1000 / 60;
 };
 
-const getDateForRange = (range: Range): number => {
-  switch (range) {
-    case Range.three: {
-      return dayjs().add(3, "hours").unix();
+const getDateForDay = (
+  day: Day
+): {
+  start: number;
+  end: number;
+} => {
+  switch (day) {
+    case Day.tue: {
+      return {
+        start: dayjs("2022 aug. 02.").unix() / 60,
+        end: dayjs("2022 aug. 02.").endOf("day").add(3, "hours").unix() / 60,
+      };
     }
-    case Range.today: {
-      return dayjs().endOf("day").unix();
+    case Day.wed: {
+      return {
+        start: dayjs("2022 aug. 03.").unix() / 60,
+        end: dayjs("2022 aug. 03.").endOf("day").add(3, "hours").unix() / 60,
+      };
     }
-    case Range.tomorrow: {
-      return dayjs().add(1, "day").endOf("day").unix();
+    case Day.thu: {
+      return {
+        start: dayjs("2022 aug. 04.").unix() / 60,
+        end: dayjs("2022 aug. 04.").endOf("day").add(3, "hours").unix() / 60,
+      };
     }
-    default: {
-      return 0;
+    case Day.fri: {
+      return {
+        start: dayjs("2022 aug. 05.").unix() / 60,
+        end: dayjs("2022 aug. 05.").endOf("day").add(3, "hours").unix() / 60,
+      };
+    }
+    case Day.sat: {
+      return {
+        start: dayjs("2022 aug. 06.").unix() / 60,
+        end: dayjs("2022 aug. 06.").endOf("day").add(3, "hours").unix() / 60,
+      };
     }
   }
 };
 
-const filterByRange = (list: Item[], range: Range) => {
-  if (range === Range.all) {
-    return list;
-  }
-  const rangeDate = getDateForRange(range);
-  return list.filter((item) => {
-    const date = parseDate(item);
-    return date < rangeDate;
-  });
+const filterByDay = (list: Item[], day: Day) => {
+  const { start, end } = getDateForDay(day);
+  return list
+    .filter((item) => {
+      const date = parseDate(item);
+      return start < date && date <= end;
+    })
+    .map((item) => {
+      const date = parseDate(item);
+      item.relativeDateInMinutes = date - start;
+      return item;
+    });
 };

@@ -1,6 +1,6 @@
 import { Filter } from "pages";
 import React, { FC, useRef } from "react";
-import { Location, Program, Range } from "types";
+import { Village, Topic, Day } from "types";
 import { Group, CheckboxGroup, Checkbox, RadioGroup, Radio } from "@mantine/core";
 
 interface FormProps {
@@ -16,30 +16,30 @@ export const Form: FC<FormProps> = ({ filter, setFilter }) => {
     }
     const data = new FormData(formRef.current);
     setFilter({
-      range: data.get("range") as Range,
-      program: data.getAll("program") as Program[],
-      location: data.getAll("location") as Location[],
+      day: data.get("day") as Day,
+      topic: data.getAll("topic") as Topic[],
+      village: data.getAll("village") as Village[],
     });
   }, [setFilter]);
 
   return (
     <form ref={formRef}>
       <Group spacing="xl">
-        <CheckboxGroup label={<h3>Helyszín</h3>} value={filter.location} onChange={onChange}>
-          {Object.values(Location).map((location) => {
-            return <Checkbox label={location} key={location} name="location" value={location} />;
+        <CheckboxGroup label={<h3>Helyszín</h3>} value={filter.village} onChange={onChange}>
+          {Object.values(Village).map((village) => {
+            return <Checkbox label={village} key={village} name="village" value={village} />;
           })}
         </CheckboxGroup>
 
-        <CheckboxGroup label={<h3>Műfaj</h3>} value={filter.program} onChange={onChange}>
-          {Object.values(Program).map((program) => {
-            return <Checkbox label={program} key={program} name="program" value={program} />;
+        <CheckboxGroup label={<h3>Műfaj</h3>} value={filter.topic} onChange={onChange}>
+          {Object.values(Topic).map((topic) => {
+            return <Checkbox label={topic} key={topic} name="topic" value={topic} />;
           })}
         </CheckboxGroup>
 
-        <RadioGroup label={<h3>Idősáv</h3>} name="range" value={filter.range} onChange={onChange}>
-          {Object.values(Range).map((range) => {
-            return <Radio label={range} key={range} value={range} />;
+        <RadioGroup label={<h3>Idősáv</h3>} name="day" value={filter.day} onChange={onChange}>
+          {Object.values(Day).map((day) => {
+            return <Radio label={day} key={day} value={day} />;
           })}
         </RadioGroup>
       </Group>

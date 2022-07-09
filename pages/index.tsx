@@ -2,21 +2,21 @@ import { Form } from "components/Form";
 import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import { useLocalStorage } from "utils/useLocalStorage";
-import { Location, Program, Range, Item } from "types";
+import { Village, Topic, Day, Item, Stage } from "types";
 import { Drawer } from "@mantine/core";
-import { Paper, Group, Button, Space } from "@mantine/core";
+import { Paper, Group, Button, Space, Card, Stack } from "@mantine/core";
 
 export interface Filter {
-  range: Range;
-  program?: Program[];
-  location?: Location[];
+  day: Day;
+  topic?: Topic[];
+  village?: Village[];
 }
 
 const Home: NextPage = () => {
   const [filter, setFilter] = useLocalStorage<Filter>("DD_KATLAN_FILTER", {
-    range: Range.all,
-    program: Object.values(Program),
-    location: Object.values(Location),
+    day: Day.tue,
+    topic: Object.values(Topic),
+    village: Object.values(Village),
   });
   const [list, setList] = useState<Item[]>([]);
   const [open, setOpen] = useState(false);
@@ -30,12 +30,53 @@ const Home: NextPage = () => {
       .then((r) => setList(r));
   }, [filter]);
 
+  // find the first program of the day
+  // show an extra 30 minutes of padding before
+  const cutoff =
+    list.reduce((smallest, current) => {
+      return Math.min(smallest, current.relativeDateInMinutes);
+    }, Infinity) - 30;
+
   return (
     <div>
       <h1>{list.length}</h1>
-      {list.map((item) => (
-        <li key={item.id}>{item.title}</li>
-      ))}
+
+      <ul style={{ position: "relative", background: "green", width: "100%", height: 2200 }}>
+        {list.map((item) => {
+          console.log(item);
+          return (
+            <li
+              key={item.id}
+              style={{
+                listStyle: "none",
+                position: "absolute",
+                left: 0,
+                top: (item.relativeDateInMinutes - cutoff) * 2,
+                width: "100%",
+                padding: 4,
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  background: "white",
+                  border: "1px solid gray",
+                  minHeight: item.duration * 2,
+                  padding: 8,
+                }}
+              >
+                <p style={{ flex: 1 }}>{item.title}</p>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <p>{item.time?.name}</p>
+                  <p>{item.duration} perc</p>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
 
       <Drawer
         title={<h2>Filter</h2>}
