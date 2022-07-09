@@ -4,13 +4,37 @@ import React, { useEffect, useState } from "react";
 import { useLocalStorage } from "utils/useLocalStorage";
 import { Village, Topic, Day, Item, Stage } from "types";
 import { Drawer } from "@mantine/core";
-import { Paper, Group, Button, Space, Card, Stack } from "@mantine/core";
+import { Paper, Group, Button, Space, Popover } from "@mantine/core";
 
 export interface Filter {
   day: Day;
   topic?: Topic[];
   village?: Village[];
 }
+
+interface Group {
+  village: Village;
+  stage: Stage;
+  list: Item[];
+}
+
+const groupByVillageAndStage = (list: Item[]): Group[] => {
+  const groups = list.reduce<Record<Stage, Group>>((groups, item) => {
+    if (!item.stage?.name || !item.village?.name) {
+      return groups;
+    }
+    if (!groups[item.stage.name]) {
+      groups[item.stage.name] = {
+        village: item.village.name,
+        stage: item.stage.name,
+        list: [],
+      };
+    }
+    groups[item.stage.name].list.push(item);
+    return groups;
+  }, {});
+  return Object.values(groups);
+};
 
 const Home: NextPage = () => {
   const [filter, setFilter] = useLocalStorage<Filter>("DD_KATLAN_FILTER", {
@@ -37,42 +61,88 @@ const Home: NextPage = () => {
       return Math.min(smallest, current.relativeDateInMinutes);
     }, Infinity) - 30;
 
+  const endOfDay =
+    list.reduce((biggest, current) => {
+      return Math.max(biggest, current.relativeDateInMinutes + current.duration);
+    }, 0) -
+    cutoff +
+    60;
+
+  const groups = groupByVillageAndStage(list);
+
   return (
     <div>
-      <h1>{list.length}</h1>
-
-      <ul style={{ position: "relative", background: "green", width: "100%", height: 2200 }}>
-        {list.map((item) => {
-          console.log(item);
+      <ul
+        style={{
+          display: "flex",
+          overflowX: "auto",
+          scrollSnapType: "x mandatory",
+          height: "100vh",
+          background: "lightgray",
+        }}
+      >
+        {groups.map((group) => {
           return (
             <li
-              key={item.id}
+              key={group.stage}
               style={{
-                listStyle: "none",
-                position: "absolute",
-                left: 0,
-                top: (item.relativeDateInMinutes - cutoff) * 2,
-                width: "100%",
-                padding: 4,
+                position: "relative",
+                scrollSnapAlign: "start",
               }}
             >
               <div
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 1,
                   background: "white",
-                  border: "1px solid gray",
-                  minHeight: item.duration * 2,
-                  padding: 8,
                 }}
               >
-                <p style={{ flex: 1 }}>{item.title}</p>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <p>{item.time?.name}</p>
-                  <p>{item.duration} perc</p>
-                </div>
+                <h2>{group.village}</h2>
+                <h2>{group.stage}</h2>
               </div>
+              <ul
+                style={{
+                  width: 280,
+                  position: "relative",
+                  height: endOfDay * 2,
+                }}
+              >
+                {group.list.map((item) => {
+                  console.log(item);
+                  return (
+                    <li
+                      key={item.id}
+                      style={{
+                        listStyle: "none",
+                        position: "absolute",
+                        left: 0,
+                        top: (item.relativeDateInMinutes - cutoff) * 2,
+                        width: "100%",
+                        padding: 4,
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "space-between",
+                          background: "white",
+                          border: "1px solid gray",
+                          minHeight: item.duration * 2,
+                          padding: 8,
+                        }}
+                      >
+                        <p style={{ flex: 1 }}>{item.title}</p>
+                        <div style={{ display: "flex", justifyContent: "space-between" }}>
+                          <p>{item.time?.name}</p>
+                          <p>{item.duration} perc</p>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
             </li>
           );
         })}
