@@ -19,13 +19,13 @@ const getBackground = (itemState: FavoriteState) => {
 };
 
 interface BoxProps {
-  cutoff: number;
+  startOfDay: number;
   item: Item;
   setShowOverlay: (open: boolean) => void;
   favorites: Favorites;
   setFavorites: React.Dispatch<React.SetStateAction<Favorites | undefined>>;
 }
-export const Box: FC<BoxProps> = ({ item, cutoff, setShowOverlay, favorites, setFavorites }) => {
+export const Box: FC<BoxProps> = ({ item, startOfDay, setShowOverlay, favorites, setFavorites }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const setOverlayState = (state: boolean) => {
     setPopoverOpen(state);
@@ -60,7 +60,7 @@ export const Box: FC<BoxProps> = ({ item, cutoff, setShowOverlay, favorites, set
         listStyle: "none",
         position: "absolute",
         left: 0,
-        top: (item.relativeDateInMinutes - cutoff) * 2,
+        top: (item.relativeDateInMinutes - startOfDay) * 2,
         padding: 4,
       }}
     >

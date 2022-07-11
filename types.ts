@@ -124,4 +124,5 @@ export enum Day {
   thu = "thu",
   fri = "fri",
   sat = "sat",
+  sun = "sun",
 }

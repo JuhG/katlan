@@ -73,19 +73,19 @@ const Home: NextPage = () => {
         return favorites[item.id] !== "nope";
       });
 
+  const PADDING = 30;
   // find the first program of the day
   // show an extra 30 minutes of padding before
-  const cutoff =
+  const startOfDay =
     visible.reduce((smallest, current) => {
       return Math.min(smallest, current.relativeDateInMinutes);
-    }, Infinity) - 30;
-
+    }, Infinity) - PADDING;
   const endOfDay =
     visible.reduce((biggest, current) => {
       return Math.max(biggest, current.relativeDateInMinutes + current.duration);
     }, 0) -
-    cutoff +
-    60;
+    startOfDay +
+    PADDING;
 
   const groups = groupByVillageAndStage(visible);
 
@@ -133,7 +133,7 @@ const Home: NextPage = () => {
                     <Box
                       key={item.id}
                       item={item}
-                      cutoff={cutoff}
+                      startOfDay={startOfDay}
                       setShowOverlay={setShowOverlay}
                       favorites={favorites as Favorites}
                       setFavorites={setFavorites}

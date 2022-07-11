@@ -17,6 +17,8 @@ const normalizeQueryValue = (value: string | string[] | undefined): any[] | unde
   return value;
 };
 
+const arrayUniqueByKey = (array: any[], key: string) => [...new Map(array.map((item) => [item[key], item])).values()];
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const response = await fetch(getUrl(req.headers.host) + "/api");
   if (!response.ok) {
@@ -35,6 +37,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       item.id = item.productionId + "_" + item.dateInMinutes;
       return item;
     });
+  list = arrayUniqueByKey(list, "id");
 
   list = filterByVillage(list, normalizeQueryValue(req.query.village));
   list = filterByTopic(list, normalizeQueryValue(req.query.topic));
@@ -76,37 +79,23 @@ const getDateForDay = (
   start: number;
   end: number;
 } => {
+  const getStartAndEndOfDay = (dayString: string) => ({
+    start: dayjs(dayString).add(3, "hours").unix() / 60,
+    end: dayjs(dayString).endOf("day").add(3, "hours").unix() / 60,
+  });
   switch (day) {
-    case Day.tue: {
-      return {
-        start: dayjs("2022 aug. 02.").add(3, "hours").unix() / 60,
-        end: dayjs("2022 aug. 02.").endOf("day").add(3, "hours").unix() / 60,
-      };
-    }
-    case Day.wed: {
-      return {
-        start: dayjs("2022 aug. 03.").add(3, "hours").unix() / 60,
-        end: dayjs("2022 aug. 03.").endOf("day").add(3, "hours").unix() / 60,
-      };
-    }
-    case Day.thu: {
-      return {
-        start: dayjs("2022 aug. 04.").add(3, "hours").unix() / 60,
-        end: dayjs("2022 aug. 04.").endOf("day").add(3, "hours").unix() / 60,
-      };
-    }
-    case Day.fri: {
-      return {
-        start: dayjs("2022 aug. 05.").add(3, "hours").unix() / 60,
-        end: dayjs("2022 aug. 05.").endOf("day").add(3, "hours").unix() / 60,
-      };
-    }
-    case Day.sat: {
-      return {
-        start: dayjs("2022 aug. 06.").add(3, "hours").unix() / 60,
-        end: dayjs("2022 aug. 06.").endOf("day").add(3, "hours").unix() / 60,
-      };
-    }
+    case Day.tue:
+      return getStartAndEndOfDay("2022 aug. 02.");
+    case Day.wed:
+      return getStartAndEndOfDay("2022 aug. 03.");
+    case Day.thu:
+      return getStartAndEndOfDay("2022 aug. 04.");
+    case Day.fri:
+      return getStartAndEndOfDay("2022 aug. 05.");
+    case Day.sat:
+      return getStartAndEndOfDay("2022 aug. 06.");
+    case Day.sun:
+      return getStartAndEndOfDay("2022 aug. 07.");
   }
 };
 
