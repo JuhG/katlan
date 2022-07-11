@@ -15,6 +15,7 @@
     "jsx": "preserve",
     "incremental": true,
     "downlevelIteration": true,
+    "strictNullChecks": true,
     "baseUrl": "."
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
