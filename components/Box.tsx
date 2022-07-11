@@ -1,4 +1,4 @@
-import { Button, Group, Popover } from "@mantine/core";
+import { Button, Group, Popover, Drawer } from "@mantine/core";
 import { Favorites, FavoriteState } from "pages";
 import { FC, useState } from "react";
 import { useLongPress } from "react-use";
@@ -21,16 +21,12 @@ const getBackground = (itemState: FavoriteState) => {
 interface BoxProps {
   startOfDay: number;
   item: Item;
-  setShowOverlay: (open: boolean) => void;
   favorites: Favorites;
   setFavorites: React.Dispatch<React.SetStateAction<Favorites | undefined>>;
 }
-export const Box: FC<BoxProps> = ({ item, startOfDay, setShowOverlay, favorites, setFavorites }) => {
+export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setFavorites }) => {
   const [popoverOpen, setPopoverOpen] = useState(false);
-  const setOverlayState = (state: boolean) => {
-    setPopoverOpen(state);
-    setShowOverlay(state);
-  };
+  const setOverlayState = (state: boolean) => setPopoverOpen(state);
   const longPressEvent = useLongPress(() => setOverlayState(true));
 
   const itemState = favorites[item.id];
