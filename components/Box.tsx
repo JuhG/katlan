@@ -1,5 +1,6 @@
-import { useMantineTheme } from "@mantine/core";
+import { Badge, useMantineTheme } from "@mantine/core";
 import { Gradient } from "components/Gradient";
+import dayjs from "dayjs";
 import { Favorites } from "pages";
 import { FC } from "react";
 import { Item } from "types";
@@ -61,6 +62,18 @@ export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setDetailId }) 
       >
         <div style={{ padding: 6, flex: 1, minHeight: 0 }}>
           <p style={{ lineHeight: 1.4 }}>{item.title}</p>
+          <ul style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 4 }}>
+            {item.labels
+              // @ts-ignore
+              ?.filter((label) => label.name !== "2022")
+              .map((label) => {
+                return (
+                  <li key={label.name}>
+                    <Badge>{label.name}</Badge>
+                  </li>
+                );
+              })}
+          </ul>
         </div>
 
         <Gradient height={20} color={getBackground()} />
@@ -73,7 +86,7 @@ export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setDetailId }) 
             justifyContent: "space-between",
           }}
         >
-          <p>{item.time?.name}</p>
+          <p>{dayjs(item.date).locale("hu").format("HH:mm")}</p>
           <p>{item.duration} perc</p>
         </div>
       </div>

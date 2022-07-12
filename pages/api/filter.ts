@@ -33,7 +33,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return item.time?.name;
     })
     .map((item) => {
-      item.dateInMinutes = new Date("2022 " + item.time?.name).getTime() / 1000 / 60;
+      item.date = new Date("2022 " + item.time?.name).getTime();
+      item.dateInMinutes = item.date / 1000 / 60;
       item.id = item.productionId + "_" + item.dateInMinutes;
       return item;
     });

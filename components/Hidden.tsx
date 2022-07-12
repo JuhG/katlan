@@ -25,8 +25,8 @@ export const Hidden: FC<HiddenProps> = ({ hidden, openHidden, setOpenHidden, set
         <ul>
           {hidden.map((item) => {
             return (
-              <>
-                <li key={item.id} style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+              <li key={item.id}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
                   <div>
                     <p>{item.title}</p>
                     <p>
@@ -40,6 +40,7 @@ export const Hidden: FC<HiddenProps> = ({ hidden, openHidden, setOpenHidden, set
                       <span>{item.duration} perc</span>
                     </p>
                   </div>
+
                   <Button
                     onClick={() => {
                       setFavorites((favs) => {
@@ -53,9 +54,10 @@ export const Hidden: FC<HiddenProps> = ({ hidden, openHidden, setOpenHidden, set
                   >
                     Vissza
                   </Button>
-                </li>
+                </div>
+
                 <Divider my="sm" />
-              </>
+              </li>
             );
           })}
           <Space h="lg" />

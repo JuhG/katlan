@@ -31,7 +31,6 @@ const Home: NextPage = () => {
   useEffect(() => {
     // @ts-ignore
     const query = new URLSearchParams(filter);
-    console.log(filter, query.toString());
     fetch("/api/filter?" + query)
       .then((r) => r.json())
       .then((r) => setList(r));

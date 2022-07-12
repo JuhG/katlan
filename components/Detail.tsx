@@ -1,5 +1,6 @@
-import { Button, Group, Space, Title } from "@mantine/core";
+import { Badge, Button, Group, Space, Title } from "@mantine/core";
 import { Gradient } from "components/Gradient";
+import dayjs from "dayjs";
 import { Favorites, FavoriteState } from "pages";
 import { FC } from "react";
 import { Item } from "types";
@@ -19,7 +20,31 @@ export const Detail: FC<DetailProps> = ({ item, favorites, setFavoriteState }) =
     <Group direction="column" style={{ height: "100%", paddingBottom: 50 }}>
       <div style={{ flex: 100, overflowY: "auto", paddingBottom: 50 }}>
         <Title order={3}>{item.title}</Title>
-        <p dangerouslySetInnerHTML={{ __html: item.description }} />
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <p>{dayjs(item.date).locale("hu").format("HH:mm")}</p>
+          <p>{item.duration} perc</p>
+        </div>
+
+        <ul style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 4 }}>
+          {item.labels
+            // @ts-ignore
+            ?.filter((label) => label.name !== "2022")
+            .map((label) => {
+              return (
+                <li key={label.name}>
+                  <Badge>{label.name}</Badge>
+                </li>
+              );
+            })}
+        </ul>
+
+        <p dangerouslySetInnerHTML={{ __html: item.description }} style={{ marginTop: 16 }} />
       </div>
 
       <Gradient />

@@ -11,6 +11,7 @@ export interface Item {
   labels: undefined | { name: Topic }[];
   // extra
   id: ID;
+  date: number;
   dateInMinutes: number;
   relativeDateInMinutes: number;
 }

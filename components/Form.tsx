@@ -1,7 +1,24 @@
 import { Filter } from "pages";
 import React, { FC, useRef } from "react";
 import { Village, Topic, Day } from "types";
-import { Group, CheckboxGroup, Checkbox, RadioGroup, Radio, Title } from "@mantine/core";
+import { Group, CheckboxGroup, Checkbox, RadioGroup, Radio, Title, SegmentedControl } from "@mantine/core";
+
+const getDayName = (day: Day) => {
+  switch (day) {
+    case Day.tue:
+      return "K";
+    case Day.wed:
+      return "Sze";
+    case Day.thu:
+      return "Cs";
+    case Day.fri:
+      return "P";
+    case Day.sat:
+      return "Szo";
+    case Day.sun:
+      return "V";
+  }
+};
 
 interface FormProps {
   filter: Filter;
@@ -37,11 +54,18 @@ export const Form: FC<FormProps> = ({ filter, setFilter }) => {
           })}
         </CheckboxGroup>
 
-        <RadioGroup label={<Title order={3}>Nap</Title>} name="day" value={filter.day} onChange={onChange}>
-          {Object.values(Day).map((day) => {
-            return <Radio label={day} key={day} value={day} />;
+        <Title order={3}>Nap</Title>
+        <SegmentedControl
+          name="day"
+          data={Object.values(Day).map((day) => {
+            return {
+              value: day,
+              label: getDayName(day),
+            };
           })}
-        </RadioGroup>
+          value={filter.day}
+          onChange={onChange}
+        />
       </Group>
     </form>
   );
