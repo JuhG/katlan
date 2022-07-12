@@ -1,4 +1,4 @@
-import { Drawer, Space, useMantineTheme } from "@mantine/core";
+import { Drawer, useMantineTheme } from "@mantine/core";
 import { Box, SCALE_MINUTES_TO_PIXELS } from "components/Box";
 import { Detail } from "components/Detail";
 import { Favorites, FavoriteState } from "pages";
@@ -88,6 +88,9 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
       <ul
         style={{
           display: "flex",
+          overflow: "auto",
+          width: "100vw",
+          height: "100%",
           scrollSnapType: "x mandatory",
           paddingLeft: 8,
           paddingRight: 8,
