@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import { useLocalStorage } from "react-use";
 import { Village, Topic, Day, Item, Stage, ID } from "types";
-import { Drawer } from "@mantine/core";
+import { Drawer, Title } from "@mantine/core";
 import { Paper, Group, Button, Space, Divider, Modal } from "@mantine/core";
 import { Calendar } from "components/Calendar";
 import { Hidden } from "components/Hidden";
@@ -53,7 +53,7 @@ const Home: NextPage = () => {
       <Calendar list={visible} favorites={favorites as Favorites} setFavorites={setFavorites} />
 
       <Drawer
-        title={<h2>Filter</h2>}
+        title={<Title order={2}>Szűrés</Title>}
         position="bottom"
         opened={open}
         onClose={() => setOpen(false)}
@@ -87,7 +87,7 @@ const Home: NextPage = () => {
           <Button variant="outline" onClick={() => setOpenHidden((value) => !value)}>
             Rejtett
           </Button>
-          <Button onClick={() => setOpen((value) => !value)}>Filter</Button>
+          <Button onClick={() => setOpen((value) => !value)}>Szűrés</Button>
         </Group>
       </Paper>
     </>

@@ -6,7 +6,7 @@ const getUrl = (host?: string) => {
   if (!host) {
     return;
   }
-  const protocol = host.includes("localhost") ? "http://" : "https://";
+  const protocol = host.includes("localhost") || host.includes("192.168.") ? "http://" : "https://";
   return protocol + host;
 };
 

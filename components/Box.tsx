@@ -23,10 +23,10 @@ export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setDetailId }) 
   const getBackground = () => {
     switch (itemState) {
       case "must": {
-        return theme.colors.green[4];
+        return theme.colors.green[3];
       }
       case "maybe": {
-        return theme.colors.yellow[4];
+        return theme.colors.yellow[3];
       }
       default: {
         return "white";
@@ -43,21 +43,20 @@ export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setDetailId }) 
         left: 0,
         top: (item.relativeDateInMinutes - startOfDay) * SCALE_MINUTES_TO_PIXELS,
         padding: 4,
+        width: "100%",
       }}
     >
       <div
         style={{
-          position: "relative",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
           background: getBackground(),
           border: "1px solid rgba(0, 0, 0, .08)",
-          height: item.duration * SCALE_MINUTES_TO_PIXELS,
+          height: item.duration * SCALE_MINUTES_TO_PIXELS - 4,
           overflow: "hidden",
-          width: 272,
           borderRadius: 8,
-          filter: "drop-shadow(0 4px 16px rgba(0, 0, 0, .16))",
+          boxShadow: "0 4px 16px rgba(0, 0, 0, .16)",
         }}
       >
         <div style={{ padding: 6, flex: 1, minHeight: 0 }}>

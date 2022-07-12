@@ -11,7 +11,6 @@ export const Gradient: FC<GradientProps> = ({ color = "white", position = "botto
       style={{
         height: 1,
         width: "100%",
-        zIndex: 250,
         position: "relative",
         pointerEvents: "none",
       }}

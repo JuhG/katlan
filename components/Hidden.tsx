@@ -1,4 +1,4 @@
-import { Button, Divider, Modal, Space } from "@mantine/core";
+import { Button, Divider, Modal, Space, Title } from "@mantine/core";
 import { Favorites } from "pages";
 import { FC } from "react";
 import { Item } from "types";
@@ -12,7 +12,7 @@ interface HiddenProps {
 export const Hidden: FC<HiddenProps> = ({ hidden, openHidden, setOpenHidden, setFavorites }) => {
   return (
     <Modal
-      title={<h2>Rejtett programok</h2>}
+      title={<Title order={2}>Rejtett programok</Title>}
       opened={openHidden}
       onClose={() => setOpenHidden(false)}
       padding="lg"
@@ -29,12 +29,16 @@ export const Hidden: FC<HiddenProps> = ({ hidden, openHidden, setOpenHidden, set
                 <li key={item.id} style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
                   <div>
                     <p>{item.title}</p>
-                    <div style={{ display: "flex", gap: 8 }}>
-                      <p>{item.village?.name}</p>
-                      <span>/</span>
-                      <p>{item.stage?.name}</p>
-                    </div>
-                    <p>{item.time?.name}</p>
+                    <p>
+                      <span>{item.village?.name}</span>
+                      <span style={{ marginLeft: 8, marginRight: 8 }}>/</span>
+                      <span>{item.stage?.name}</span>
+                    </p>
+                    <p>
+                      <span>{item.time?.name}</span>
+                      <span style={{ marginLeft: 8, marginRight: 8 }}>/</span>
+                      <span>{item.duration} perc</span>
+                    </p>
                   </div>
                   <Button
                     onClick={() => {

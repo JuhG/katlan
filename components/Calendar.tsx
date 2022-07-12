@@ -1,4 +1,4 @@
-import { Drawer } from "@mantine/core";
+import { Drawer, Space, useMantineTheme } from "@mantine/core";
 import { Box, SCALE_MINUTES_TO_PIXELS } from "components/Box";
 import { Detail } from "components/Detail";
 import { Favorites, FavoriteState } from "pages";
@@ -36,6 +36,7 @@ interface CalendarProps {
   setFavorites: React.Dispatch<React.SetStateAction<Favorites | undefined>>;
 }
 export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) => {
+  const theme = useMantineTheme();
   const [detailId, setDetailId] = useState<string | null>(null);
 
   // find the first program of the day
@@ -50,7 +51,7 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
       return Math.max(biggest, current.relativeDateInMinutes + current.duration);
     }, 0) -
     startOfDay +
-    PADDING;
+    PADDING * 2;
 
   const groups = groupByVillageAndStage(list);
 
@@ -87,10 +88,10 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
       <ul
         style={{
           display: "flex",
-          overflowX: "auto",
           scrollSnapType: "x mandatory",
-          height: "100vh",
-          background: "lightgray",
+          paddingLeft: 8,
+          paddingRight: 8,
+          gap: 8,
         }}
       >
         {groups.map((group) => {
@@ -100,26 +101,31 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
               style={{
                 position: "relative",
                 scrollSnapAlign: "start",
+                background: theme.colors.gray[3],
+                paddingLeft: 8,
+                paddingRight: 8,
+                flex: "0 0 280px",
+                width: 280,
+                height: endOfDay * SCALE_MINUTES_TO_PIXELS,
               }}
             >
               <div
                 style={{
                   position: "sticky",
-                  top: 0,
+                  top: 8,
                   zIndex: 1,
-                  background: "white",
+                  padding: 8,
+                  borderRadius: 8,
+                  boxShadow: "0 4px 16px rgba(0, 0, 0, .16)",
+                  background: "#ffefd5",
+                  color: "#e71a30",
+                  fontWeight: 800,
                 }}
               >
                 <p>{group.village}</p>
                 <p>{group.stage}</p>
               </div>
-              <ul
-                style={{
-                  width: 280,
-                  position: "relative",
-                  height: endOfDay * SCALE_MINUTES_TO_PIXELS,
-                }}
-              >
+              <ul style={{ position: "relative" }}>
                 {group.list.map((item) => {
                   return (
                     <Box
