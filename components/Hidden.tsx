@@ -19,50 +19,46 @@ export const Hidden: FC<HiddenProps> = ({ hidden, openHidden, setOpenHidden, set
       size="auto"
       overlayColor="#aaa"
     >
-      {!hidden.length ? (
-        <p>Még nincs egy program sem elrejtve!</p>
-      ) : (
-        <ul>
-          {hidden.map((item) => {
-            return (
-              <li key={item.id}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
-                  <div>
-                    <p>{item.title}</p>
-                    <p>
-                      <span>{item.village?.name}</span>
-                      <span style={{ marginLeft: 8, marginRight: 8 }}>/</span>
-                      <span>{item.stage?.name}</span>
-                    </p>
-                    <p>
-                      <span>{item.time?.name}</span>
-                      <span style={{ marginLeft: 8, marginRight: 8 }}>/</span>
-                      <span>{item.duration} perc</span>
-                    </p>
-                  </div>
-
-                  <Button
-                    onClick={() => {
-                      setFavorites((favs) => {
-                        if (!favs) {
-                          favs = {};
-                        }
-                        delete favs[item.id];
-                        return favs;
-                      });
-                    }}
-                  >
-                    Vissza
-                  </Button>
+      <ul>
+        {hidden.map((item) => {
+          return (
+            <li key={item.id}>
+              <div style={{ display: "flex", justifyContent: "space-between", gap: 16 }}>
+                <div>
+                  <p>{item.title}</p>
+                  <p>
+                    <span>{item.village?.name}</span>
+                    <span style={{ marginLeft: 8, marginRight: 8 }}>/</span>
+                    <span>{item.stage?.name}</span>
+                  </p>
+                  <p>
+                    <span>{item.time?.name}</span>
+                    <span style={{ marginLeft: 8, marginRight: 8 }}>/</span>
+                    <span>{item.duration} perc</span>
+                  </p>
                 </div>
 
-                <Divider my="sm" />
-              </li>
-            );
-          })}
-          <Space h="lg" />
-        </ul>
-      )}
+                <Button
+                  onClick={() => {
+                    setFavorites((favs) => {
+                      if (!favs) {
+                        favs = {};
+                      }
+                      delete favs[item.id];
+                      return favs;
+                    });
+                  }}
+                >
+                  Vissza
+                </Button>
+              </div>
+
+              <Divider my="sm" />
+            </li>
+          );
+        })}
+        <Space h="lg" />
+      </ul>
     </Modal>
   );
 };

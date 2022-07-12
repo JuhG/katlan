@@ -83,9 +83,11 @@ const Home: NextPage = () => {
       >
         <Group position="apart">
           <Button variant="outline">?</Button>
-          <Button variant="outline" onClick={() => setOpenHidden((value) => !value)}>
-            Rejtett
-          </Button>
+          {hidden.length > 0 && (
+            <Button variant="outline" onClick={() => setOpenHidden((value) => !value)}>
+              Rejtett
+            </Button>
+          )}
           <Button onClick={() => setOpen((value) => !value)}>Szűrés</Button>
         </Group>
       </Paper>
