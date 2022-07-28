@@ -96,6 +96,7 @@ const Home: NextPage = () => {
           )}
           <Button onClick={() => setOpen((value) => !value)}>Szűrés</Button>
         </Group>
+        <Space h="xs" />
       </Paper>
     </>
   );
