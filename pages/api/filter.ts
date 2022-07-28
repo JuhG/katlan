@@ -1,6 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Day, Village, Topic, Item, Stage } from "types";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const getUrl = (host?: string) => {
   if (!host) {
@@ -33,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return item.time?.name;
     })
     .map((item) => {
-      item.date = new Date("2022 " + item.time?.name).getTime();
+      item.date = dayjs.tz("2022 " + item.time?.name, "Europe/Budapest").unix() * 1000;
       item.dateInMinutes = item.date / 1000 / 60;
       item.id = item.productionId + "_" + item.dateInMinutes;
       return item;

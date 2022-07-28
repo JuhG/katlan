@@ -5,11 +5,6 @@ import { Favorites, FavoriteState } from "pages";
 import { FC } from "react";
 import { Item } from "types";
 
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
 interface DetailProps {
   item: Item;
   favorites: Favorites;
@@ -33,13 +28,9 @@ export const Detail: FC<DetailProps> = ({ item, favorites, setFavoriteState }) =
           }}
         >
           <p>
-            <span>{dayjs(item.date).tz("Europe/Budapest").format("HH:mm")}</span>
+            <span>{dayjs(item.date).format("HH:mm")}</span>
             <span style={{ paddingLeft: 4, paddingRight: 4 }}>-</span>
-            <span>
-              {dayjs(item.date + item.duration * 60 * 1000)
-                .tz("Europe/Budapest")
-                .format("HH:mm")}
-            </span>
+            <span>{dayjs(item.date + item.duration * 60 * 1000).format("HH:mm")}</span>
           </p>
           <p>{item.duration} perc</p>
         </div>
