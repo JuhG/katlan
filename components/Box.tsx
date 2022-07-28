@@ -5,6 +5,11 @@ import { Favorites } from "pages";
 import { FC } from "react";
 import { Item } from "types";
 
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 export const SCALE_MINUTES_TO_PIXELS = 3.8;
 
 interface BoxProps {
@@ -98,11 +103,11 @@ export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setDetailId }) 
           }}
         >
           <p>
-            <span>{dayjs(item.date).locale("hu").format("HH:mm")}</span>
+            <span>{dayjs(item.date).tz("Europe/Budapest").format("HH:mm")}</span>
             <span style={{ paddingLeft: 4, paddingRight: 4 }}>-</span>
             <span>
               {dayjs(item.date + item.duration * 60 * 1000)
-                .locale("hu")
+                .tz("Europe/Budapest")
                 .format("HH:mm")}
             </span>
           </p>
