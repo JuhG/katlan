@@ -43,6 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   list = filterByVillage(list, normalizeQueryValue(req.query.village));
   list = filterByTopic(list, normalizeQueryValue(req.query.topic));
   list = filterByDay(list, req.query.day as Day);
+  list.sort(sortByLocation);
   // TODO: remove unnecessary data
   res.json(list);
 }
@@ -110,4 +111,18 @@ const filterByDay = (list: Item[], day: Day) => {
       item.relativeDateInMinutes = item.dateInMinutes - start;
       return item;
     });
+};
+
+const sortByLocation = (a: Item, b: Item) => {
+  if (!b.village?.name || !b.stage?.name) {
+    return 1;
+  }
+  if (!a.village?.name || !a.stage?.name) {
+    return 0;
+  }
+  const villageCompared = a.village.name.localeCompare(b.village.name);
+  if (villageCompared !== 0) {
+    return villageCompared;
+  }
+  return a.stage.name.localeCompare(b.stage.name);
 };
