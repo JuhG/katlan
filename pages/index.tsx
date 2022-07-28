@@ -7,6 +7,7 @@ import { Drawer, Title } from "@mantine/core";
 import { Paper, Group, Button, Space, Divider, Modal } from "@mantine/core";
 import { Calendar } from "components/Calendar";
 import { Hidden } from "components/Hidden";
+import { Info } from "components/Info";
 
 export interface Filter {
   day: Day;
@@ -27,6 +28,7 @@ const Home: NextPage = () => {
   const [open, setOpen] = useState(false);
   const [favorites, setFavorites] = useLocalStorage<Favorites>("DD_KATLAN_FAVORITES", {});
   const [openHidden, setOpenHidden] = useState(false);
+  const [openInfo, setOpenInfo] = useState(false);
 
   useEffect(() => {
     // @ts-ignore
@@ -69,6 +71,8 @@ const Home: NextPage = () => {
 
       <Hidden hidden={hidden} openHidden={openHidden} setOpenHidden={setOpenHidden} setFavorites={setFavorites} />
 
+      <Info openInfo={openInfo} setOpenInfo={setOpenInfo} />
+
       <Paper
         style={{
           width: "100%",
@@ -82,7 +86,9 @@ const Home: NextPage = () => {
         withBorder
       >
         <Group position="apart">
-          <Button variant="outline">?</Button>
+          <Button variant="outline" onClick={() => setOpenInfo((value) => !value)}>
+            ?
+          </Button>
           {hidden.length > 0 && (
             <Button variant="outline" onClick={() => setOpenHidden((value) => !value)}>
               Rejtett
