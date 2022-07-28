@@ -74,6 +74,17 @@ export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setDetailId }) 
                 );
               })}
           </ul>
+
+          <img
+            style={{ marginTop: 16 }}
+            src={
+              item.thumbnail.mobile.includes("http")
+                ? item.thumbnail.mobile
+                : `https://ordogkatlan.hu${item.thumbnail.mobile}`
+            }
+            loading="lazy"
+            alt={item.title}
+          />
         </div>
 
         <Gradient height={20} color={getBackground()} />
@@ -86,7 +97,15 @@ export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setDetailId }) 
             justifyContent: "space-between",
           }}
         >
-          <p>{dayjs(item.date).locale("hu").format("HH:mm")}</p>
+          <p>
+            <span>{dayjs(item.date).locale("hu").format("HH:mm")}</span>
+            <span style={{ paddingLeft: 4, paddingRight: 4 }}>-</span>
+            <span>
+              {dayjs(item.date + item.duration * 60 * 1000)
+                .locale("hu")
+                .format("HH:mm")}
+            </span>
+          </p>
           <p>{item.duration} perc</p>
         </div>
       </div>

@@ -9,6 +9,7 @@ export interface Item {
   village: undefined | { name: Village };
   stage: undefined | { name: Stage };
   labels: undefined | { name: Topic }[];
+  thumbnail: { mobile: string };
   // extra
   id: ID;
   date: number;

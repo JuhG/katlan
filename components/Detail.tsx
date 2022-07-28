@@ -27,7 +27,15 @@ export const Detail: FC<DetailProps> = ({ item, favorites, setFavoriteState }) =
             justifyContent: "space-between",
           }}
         >
-          <p>{dayjs(item.date).locale("hu").format("HH:mm")}</p>
+          <p>
+            <span>{dayjs(item.date).locale("hu").format("HH:mm")}</span>
+            <span style={{ paddingLeft: 4, paddingRight: 4 }}>-</span>
+            <span>
+              {dayjs(item.date + item.duration * 60 * 1000)
+                .locale("hu")
+                .format("HH:mm")}
+            </span>
+          </p>
           <p>{item.duration} perc</p>
         </div>
 
@@ -43,6 +51,17 @@ export const Detail: FC<DetailProps> = ({ item, favorites, setFavoriteState }) =
               );
             })}
         </ul>
+
+        <img
+          style={{ marginTop: 16 }}
+          src={
+            item.thumbnail.mobile.includes("http")
+              ? item.thumbnail.mobile
+              : `https://ordogkatlan.hu${item.thumbnail.mobile}`
+          }
+          loading="lazy"
+          alt={item.title}
+        />
 
         <p dangerouslySetInnerHTML={{ __html: item.description }} style={{ marginTop: 16 }} />
       </div>
