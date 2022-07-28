@@ -5,7 +5,7 @@ import { Favorites } from "pages";
 import { FC } from "react";
 import { Item } from "types";
 
-export const SCALE_MINUTES_TO_PIXELS = 2.7;
+export const SCALE_MINUTES_TO_PIXELS = 3.8;
 
 interface BoxProps {
   startOfDay: number;
@@ -57,7 +57,7 @@ export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setDetailId }) 
           height: item.duration * SCALE_MINUTES_TO_PIXELS - 4,
           overflow: "hidden",
           borderRadius: 8,
-          boxShadow: "0 4px 16px rgba(0, 0, 0, .16)",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, .12)",
         }}
       >
         <div style={{ padding: 6, flex: 1, minHeight: 0 }}>

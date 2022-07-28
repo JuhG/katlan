@@ -88,12 +88,11 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
       <ul
         style={{
           display: "flex",
-          overflow: "auto",
-          width: "100vw",
-          height: "100%",
-          scrollSnapType: "x mandatory",
+          // overflow: "auto",
+          scrollSnapType: "x mandatory", // not working *without* the overflow
           paddingLeft: 8,
           paddingRight: 8,
+          paddingTop: 8,
           gap: 8,
         }}
       >
@@ -104,9 +103,11 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
               style={{
                 position: "relative",
                 scrollSnapAlign: "start",
-                background: theme.colors.gray[3],
+                scrollMarginLeft: 16,
+                background: theme.colors.gray[2],
                 paddingLeft: 8,
                 paddingRight: 8,
+                borderRadius: 8,
                 flex: "0 0 280px",
                 width: 280,
                 height: endOfDay * SCALE_MINUTES_TO_PIXELS,
@@ -114,12 +115,12 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
             >
               <div
                 style={{
-                  position: "sticky",
-                  top: 8,
+                  position: "sticky", // not working *with* the overflow
+                  top: 16,
                   zIndex: 1,
                   padding: 8,
                   borderRadius: 8,
-                  boxShadow: "0 4px 16px rgba(0, 0, 0, .16)",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, .12)",
                   background: "#ffefd5",
                   color: "#e71a30",
                   fontWeight: 800,
@@ -128,7 +129,14 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
                 <p>{group.village}</p>
                 <p>{group.stage}</p>
               </div>
-              <ul style={{ position: "relative" }}>
+              <ul
+                style={{
+                  position: "absolute",
+                  top: 100,
+                  left: 0,
+                  width: "100%",
+                }}
+              >
                 {group.list.map((item) => {
                   return (
                     <Box
