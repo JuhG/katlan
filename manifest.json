@@ -1,0 +1,16 @@
+{
+  "short_name": "Katlan",
+  "name": "Katlan alternatív műsorfüzet",
+  "icons": [
+    {
+      "src": "https://fav.farm/🔥",
+      "type": "image/svg+xml",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#E71A30",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#E71A30"
+}
