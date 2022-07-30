@@ -88,7 +88,7 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
       <ul
         style={{
           display: "flex",
-          // overflow: "auto",
+          overflow: "auto",
           scrollSnapType: "x mandatory", // not working *without* the overflow
           paddingLeft: 8,
           paddingRight: 8,
@@ -103,7 +103,7 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
               style={{
                 position: "relative",
                 scrollSnapAlign: "start",
-                scrollMarginLeft: 16,
+                scrollMarginLeft: 8,
                 background: theme.colors.gray[2],
                 paddingLeft: 8,
                 paddingRight: 8,

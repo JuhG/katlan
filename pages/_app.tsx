@@ -10,6 +10,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <title>Katlan alternatív műsorfüzet</title>
         <link rel="icon" href="https://fav.farm/🔥" />
         <link rel="manifest" href="/manifest.json" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <MantineProvider withGlobalStyles withNormalizeCSS>
         <Component {...pageProps} />
