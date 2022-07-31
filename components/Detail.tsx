@@ -41,8 +41,8 @@ export const Detail: FC<DetailProps> = ({ item, favorites, setFavoriteState }) =
             ?.filter((label) => label.name !== "2022")
             .map((label) => {
               return (
-                <li key={label.name}>
-                  <Badge>{label.name}</Badge>
+                <li key={label.name} style={{ maxWidth: 150 }}>
+                  <Badge fullWidth>{label.name}</Badge>
                 </li>
               );
             })}

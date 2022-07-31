@@ -108,8 +108,8 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
                 paddingLeft: 8,
                 paddingRight: 8,
                 borderRadius: 8,
-                flex: "0 0 280px",
-                width: 280,
+                flex: "0 0 220px",
+                width: 220,
                 height: endOfDay * SCALE_MINUTES_TO_PIXELS,
               }}
             >
@@ -124,6 +124,7 @@ export const Calendar: FC<CalendarProps> = ({ list, favorites, setFavorites }) =
                   background: "#ffefd5",
                   color: "#e71a30",
                   fontWeight: 800,
+                  fontSize: 14,
                 }}
               >
                 <p>{group.village}</p>

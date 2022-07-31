@@ -5,7 +5,7 @@ import { Favorites } from "pages";
 import { FC } from "react";
 import { Item } from "types";
 
-export const SCALE_MINUTES_TO_PIXELS = 3.8;
+export const SCALE_MINUTES_TO_PIXELS = 3.1;
 
 interface BoxProps {
   startOfDay: number;
@@ -45,6 +45,7 @@ export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setDetailId }) 
         top: (item.relativeDateInMinutes - startOfDay) * SCALE_MINUTES_TO_PIXELS,
         padding: 4,
         width: "100%",
+        fontSize: 14,
       }}
     >
       <div
@@ -62,21 +63,23 @@ export const Box: FC<BoxProps> = ({ item, startOfDay, favorites, setDetailId }) 
       >
         <div style={{ padding: 6, flex: 1, minHeight: 0 }}>
           <p style={{ lineHeight: 1.4 }}>{item.title}</p>
-          <ul style={{ marginTop: 8, display: "flex", flexWrap: "wrap", gap: 4 }}>
+          <ul style={{ marginTop: 4, display: "flex", flexWrap: "wrap", gap: 4 }}>
             {item.labels
               // @ts-ignore
               ?.filter((label) => label.name !== "2022")
               .map((label) => {
                 return (
-                  <li key={label.name}>
-                    <Badge>{label.name}</Badge>
+                  <li key={label.name} style={{ maxWidth: 150 }}>
+                    <Badge size="xs" fullWidth>
+                      {label.name}
+                    </Badge>
                   </li>
                 );
               })}
           </ul>
 
           <img
-            style={{ marginTop: 16 }}
+            style={{ marginTop: 8 }}
             src={
               item.thumbnail.mobile.includes("http")
                 ? item.thumbnail.mobile

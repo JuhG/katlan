@@ -18,7 +18,7 @@ export const Gradient: FC<GradientProps> = ({ color = "white", position = "botto
       <div
         style={{
           position: "absolute",
-          [position]: 0,
+          [position]: -1,
           height,
           width: "100%",
           background: `linear-gradient(to ${position}, transparent, ${color})`,
